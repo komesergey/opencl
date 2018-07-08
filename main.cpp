@@ -1,11 +1,10 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
-#ifdef __APPLE__
-#include <OpenCL/opencl.h>
 #include <ctime>
 #include <chrono>
-
+#ifdef __APPLE__
+#include <OpenCL/opencl.h>
 #endif
 
 static const char source[] =
@@ -13,11 +12,6 @@ static const char source[] =
     "int i = get_global_id(0);\n"
     "C[i] = A[i] + B[i];\n"
 "}\n";
-
-static double diffclock(clock_t clock1,clock_t clock2)
-{
-    return clock1-clock2;
-}
 
 long testSpeed(cl_device_id current_id){
     int i;
@@ -141,8 +135,6 @@ int main() {
         free(devices);
         free(platforms);
     }
-
-
 
     return 0;
 }
