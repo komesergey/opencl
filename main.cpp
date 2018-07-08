@@ -3,8 +3,11 @@
 #include <cstring>
 #include <ctime>
 #include <chrono>
+
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
+#else
+#include <CL/cl.h>
 #endif
 
 static const char source[] =
