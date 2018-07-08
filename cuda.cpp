@@ -65,7 +65,6 @@ int main(int argc,char *argv[])
         Host_b[i] = N - i;
     }
 
-    auto start = std::chrono::high_resolution_clock::now();
 
     CUdeviceptr devBufferA;
     checkCudaErrors(cuMemAlloc(&devBufferA, sizeof(int) * N));
@@ -86,14 +85,16 @@ int main(int argc,char *argv[])
 
     gridSize = (unsigned int)ceil((float)N/blockSize);
 
+    auto start = std::chrono::high_resolution_clock::now();
+
     checkCudaErrors(cuLaunchKernel(function, gridSize, 1, 1, blockSize, 1, 1, 0,
                                    nullptr, KernelParams, nullptr));
 
-    checkCudaErrors(cuMemcpyDtoH(Host_c, devBufferC, N*sizeof(int)));
-
     auto done = std::chrono::high_resolution_clock::now();
 
-    long resultTime = std::chrono::duration_cast<std::chrono::milliseconds>(done - start).count();
+    checkCudaErrors(cuMemcpyDtoH(Host_c, devBufferC, N*sizeof(int)));
+
+    long resultTime = std::chrono::duration_cast<std::chrono::nanoseconds>(done - start).count();
 
     printf("Time spent: %ld\n", resultTime);
 
