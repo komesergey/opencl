@@ -19,7 +19,7 @@ static const char source[] =
 long testSpeed(cl_device_id current_id){
     int i;
     cl_int ret;
-    const int LIST_SIZE = 1024*1024*1024;
+    const int LIST_SIZE = 1024 * 1024 * 512;
     auto *A = (int*)malloc(sizeof(int)*LIST_SIZE);
     auto *B = (int*)malloc(sizeof(int)*LIST_SIZE);
     for(i = 0; i < LIST_SIZE; i++) {
@@ -96,7 +96,7 @@ long testSpeed(cl_device_id current_id){
     free(A);
     free(B);
     free(C);
-    return std::chrono::duration_cast<std::chrono::milliseconds>(done-start).count();
+    return std::chrono::duration_cast<std::chrono::milliseconds>(done - start).count();
 }
 
 int main() {
@@ -134,10 +134,10 @@ int main() {
             free(value);
 
         }
-
         free(devices);
-        free(platforms);
     }
+
+    free(platforms);
 
     return 0;
 }
