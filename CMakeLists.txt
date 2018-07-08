@@ -3,6 +3,11 @@ project(opencl)
 
 add_executable(opencl main.cpp)
 add_executable(devices devices.cpp)
+if(DEFINED ENV{CUDA_PATH})
+    add_executable(cuda cuda.cpp)
+    include_directories("$ENV{CUDA_PATH}/include")
+    target_link_libraries(cuda $ENV{CUDA_PATH}/lib/x64/cuda.lib)
+endif()
 
 message("CUDA: " $ENV{CUDA_PATH})
 
