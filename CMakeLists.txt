@@ -3,19 +3,19 @@ project(opencl)
 
 add_executable(opencl main.cpp)
 add_executable(devices devices.cpp)
+
 if(DEFINED ENV{CUDA_PATH})
+    message("CUDA: " $ENV{CUDA_PATH})
     add_executable(cuda cuda.cpp)
     include_directories("$ENV{CUDA_PATH}/include")
     target_link_libraries(cuda $ENV{CUDA_PATH}/lib/x64/cuda.lib)
     target_link_libraries(cuda $ENV{CUDA_PATH}/lib/x64/nvrtc.lib)
 endif()
 
-message("CUDA: " $ENV{CUDA_PATH})
-
-set(CMAKE_CXX_STANDARD 11)
-
 if(APPLE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -framework OpenCL")
+else()
+    set(CMAKE_CXX_STANDARD 11)
 endif()
 
 if(MSVC OR MSYS OR MINGW OR WIN32)
