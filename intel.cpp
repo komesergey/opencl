@@ -20,11 +20,12 @@ float dot_sse(const float *vec1, const float *vec2, unsigned n)
     {
         __m128 w = _mm_load_ps(&vec1[i]);
         __m128 x = _mm_load_ps(&vec2[i]);
+
         x = _mm_mul_ps(w, x);
         u = _mm_add_ps(u, x);
     }
-    float t[4] = {0};
-    _mm_storeu_ps(t, u);
+    __attribute__((aligned(16))) float t[4] = {0};
+    _mm_store_ps(t, u);
     return t[0] + t[1] + t[2] + t[3];
 }
 
@@ -39,8 +40,8 @@ float dot_avx(const float *vec1, const float *vec2, unsigned n)
         x = _mm256_mul_ps(w, x);
         u = _mm256_add_ps(u, x);
     }
-    float t[8] = {0};
-    _mm256_storeu_ps(t, u);
+    __attribute__((aligned(32))) float t[8] = {0};
+    _mm256_store_ps(t, u);
     return t[0] + t[1] + t[2] + t[3] + t[4] + t[5] + t[6] + t[7];
 }
 
@@ -62,8 +63,8 @@ float dot_avx_2(const float *vec1, const float *vec2, unsigned n)
     }
     u1 = _mm256_add_ps(u1, u2);
 
-    float t[8] = {0};
-    _mm256_storeu_ps(t, u1);
+    __attribute__((aligned(32))) float t[8] = {0};
+    _mm256_store_ps(t, u1);
     return t[0] + t[1] + t[2] + t[3] + t[4] + t[5] + t[6] + t[7];
 }
 
@@ -91,10 +92,12 @@ int main()
 
     for(unsigned len = len_begin; len <= len_end; len *= len_fact)
     {
-        auto *p1 = new float[len + 8];
-        auto *p2 = new float[len + 8];
+        auto *p1 = new __attribute__((aligned(32))) float[len + 8];
+        auto *p2 = new __attribute__((aligned(32))) float[len + 8];
         float *vec1 = p1;
         float *vec2 = p2;
+        while(reinterpret_cast<long>(vec1) % 32) ++vec1;
+        while(reinterpret_cast<long>(vec2) % 32) ++vec2;
         std::generate(vec1, vec1 + len, [&rng, &dst](){ return dst(rng); });
         std::generate(vec2, vec2 + len, [&rng, &dst](){ return dst(rng); });
 

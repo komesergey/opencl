@@ -3,7 +3,6 @@ project(opencl)
 
 add_executable(opencl main.cpp)
 add_executable(devices devices.cpp)
-add_executable(intel intel.cpp)
 
 if(DEFINED ENV{CUDA_PATH})
     message("CUDA: " $ENV{CUDA_PATH})
@@ -14,7 +13,8 @@ if(DEFINED ENV{CUDA_PATH})
 endif()
 
 if(APPLE)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -framework OpenCL")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -framework OpenCL -march=native")
+    add_executable(intel intel.cpp)
 elseif(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /arch:AVX2")
 else()
